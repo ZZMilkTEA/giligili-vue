@@ -1,18 +1,29 @@
 <template>
   <div id="app" class="main-contianer">
-    <NavBar></NavBar>
+    <NavBar v-if="isNavAlive"></NavBar>
     <router-view></router-view>
   </div>
 </template>
 
 <script>
-import NavBar from './components/NavBar.vue';
+import NavBar from '@/components/NavBar.vue';
 
 export default {
-  name: 'app',
+  name: 'App',
+  data(){
+    return{
+      isNavAlive: true,
+    }
+  },
   components: {
     NavBar,
   },
+  methods:{
+    reload(){
+      this.isNavAlive = false;
+      this.$nextTick(() => (this.isNavAlive = true))
+    }
+  }
 };
 </script>
 

@@ -2,7 +2,7 @@ version: '2'
 
 services:
   violet:
-    image: registry.cn-hongkong.aliyuncs.com/chengka/violet:latest
+    image: registry.cn-beijing.aliyuncs.com/zzmilktea/steaming_website:latest
     restart: always
     ports:
-      - 3010:80
+      - 3001:80

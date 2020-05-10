@@ -39,7 +39,7 @@ export default {
   },
   methods: {
     load() {
-      API.getVideo(this.$route.params.videoID).then((res) => {
+      API.getVideo(this.$route.params.videoId).then((res) => {
         this.video = res.data;
         this.playerOptions.sources[0].src = this.video.url;
       });
