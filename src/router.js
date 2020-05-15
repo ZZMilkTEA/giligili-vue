@@ -17,7 +17,7 @@ export default new Router({
       component: () => import(/* webpackChunkName: "video" */ './views/PostVideo.vue'),
     },
     {
-      path: '/video/:videoId',
+      path: '/video/:id',
       name: 'showVideo',
       component: () => import(/* webpackChunkName: "video" */ './views/ShowVideo.vue'),
     },
@@ -32,6 +32,12 @@ export default new Router({
       component: () => import(/* webpackChunkName: "notice" */ './views/Notice.vue'),
     },
     {
+      path: '/search',
+      name: 'Search',
+      props: true,
+      component: () => import(/* webpackChunkName: "search" */ './views/SearchResult'),
+    },
+    {
       path: '/signIn',
       name: 'SignIn',
       component: () => import(/* webpackChunkName: "user" */ './views/SignIn.vue'),
@@ -42,7 +48,7 @@ export default new Router({
       component: () => import(/* webpackChunkName: "user" */ './views/SignUp.vue'),
     },
     {
-      path: '/user/:userID',
+      path: '/user/:id',
       name: 'User',
       component: () => import(/* webpackChunkName: "user" */ './views/ShowUser.vue'),
     },

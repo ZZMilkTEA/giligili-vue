@@ -49,7 +49,7 @@ export default {
     },
 
     goUserPage(uid){
-      this.$router.push({name: 'User', params: {userID: uid}})
+      this.$router.push({name: 'User', params: {id: uid}})
     }
   },
 

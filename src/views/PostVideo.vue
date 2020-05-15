@@ -2,24 +2,31 @@
   <div class="post-video">
     <div v-if="formShow">
       <h2>欢迎投稿：</h2>
-      <el-form ref="form" :model="form" label-width="80px">
+      <el-form ref="form" :model="form" label-width="10em">
         <el-form-item label="标题">
           <el-input v-model="form.title"></el-input>
         </el-form-item>
 
         <el-form-item label="分区">
           <el-select  v-model="form.type">
-            <el-option label="教育" value="0"></el-option>
-            <el-option label="美食" value="1"></el-option>
-            <el-option label="科技" value="2"></el-option>
+            <el-option label="教育" value="education"></el-option>
+            <el-option label="美食" value="food"></el-option>
+            <el-option label="科技" value="technology"></el-option>
           </el-select>
         </el-form-item>
 
-        <el-form-item label="视频地址">
+        <el-form-item label="视频投稿方式">
+          <el-radio-group v-model="form.from_outside">
+            <el-radio label="0">自己上传</el-radio>
+            <el-radio label="1">外链资源</el-radio>
+          </el-radio-group>
+        </el-form-item>
+
+        <el-form-item v-if="form.from_outside" label="视频地址">
           <el-input type="url" v-model="form.url"></el-input>
         </el-form-item>
 
-        <el-form-item label="视频文件">
+        <el-form-item v-if="!form.from_outside" label="视频文件">
           <el-upload
             class="video-uploader"
             drag
@@ -70,8 +77,8 @@
 </template>
 
 <script>
-import * as API from '@/api/video/';
-import uploadAPI from '@/api/upload/';
+import * as API from '../api/video/';
+import uploadAPI from '../api/upload/';
 
 export default {
   name: 'PostVideo',
@@ -81,18 +88,20 @@ export default {
       dialogImageUrl: '',
       dialogVisible: false,
       formShow: true,
+      editable:false,
       form: {
         title: '',
         info: '',
         url: '',
         avatar: '',
         type: '',
+        from_outside: '0',
       },
       progress:{
         showProgress:false,
         videoUploadPercent:0,
         status:'',
-      }
+      },
     };
   },
   methods: {
@@ -110,7 +119,8 @@ export default {
     },
     uploadVideoRequest(option) {
       this.progress.showProgress = true;
-      uploadAPI(option.file.name).then((res) => {
+      this.progress.status = '';
+      uploadAPI(option.file.name,this.$store.getters.getToken).then((res) => {
         const oReq = new XMLHttpRequest();
         oReq.open('PUT', res.data.put, true);
         oReq.upload.addEventListener("progress",this.progressFunction,false); //调用方法监听上传进度
@@ -123,7 +133,6 @@ export default {
           });
         };
         oReq.send(option.file);
-
 
       }).catch((error) => {
         this.$notify.error({
@@ -158,7 +167,7 @@ export default {
       return isImage && isLt2M;
     },
     uploadAvatarRequest(option) {
-      uploadAPI(option.file.name).then((res) => {
+      uploadAPI(option.file.name,this.$store.getters.getToken).then((res) => {
         const oReq = new XMLHttpRequest();
         oReq.open('PUT', res.data.put, true);
         oReq.send(option.file);
@@ -186,6 +195,7 @@ export default {
             message: `请等待审核结果`,
             type: 'success',
           });
+          this.$router.go(0)
         }
       }).catch((error) => {
         this.$notify.error({
@@ -207,7 +217,6 @@ export default {
 
 <style>
   .avatar-uploader {
-    height: 800px;
   }
 
   .avatar-uploader .el-upload {
@@ -237,6 +246,9 @@ export default {
     text-align: center;
   }
 
+  .el-upload__tip{
+    margin-top: -1em;
+  }
   .avatar {
     max-width: 178px;
     max-height: 178px;

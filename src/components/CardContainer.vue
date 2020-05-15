@@ -2,7 +2,7 @@
   <div class="cardContainer">
     <h2>{{title}}</h2>
     <el-row :gutter="20">
-      <el-col :xs="24" :sm="8" :md="8" v-for="video in videos" :key="video.id">
+      <el-col :xs="24" :sm="6" :md="6" v-for="video in videos" :key="video.id">
         <video-card
         v-bind:card-info="{video:video, avatar:video.avatar,
          title:video.title, info:video.info}"
@@ -13,7 +13,7 @@
       <el-pagination
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :page-size="6"
+      :page-size="8"
       layout="prev, pager, next"
       :total="total">
     </el-pagination>
@@ -32,13 +32,13 @@
         return {
           videos: [],
           start: 0,
-          limit: 6,
+          limit: 8,
           total: 0,
         }
       },
       methods: {
         load() {
-          API.getPassedVideos(this.start, this.limit).then((res) => {
+          API.listPassedVideos(this.start, this.limit).then((res) => {
             this.videos = res.data.items;
             this.total = res.data.total;
           });

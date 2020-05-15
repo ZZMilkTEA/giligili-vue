@@ -5,6 +5,7 @@
     <div>UID：{{user.id}}</div>
     <div>用户名：{{user.user_name}}</div>
     <div>昵称：{{user.nickname}}</div>
+    <div>身份：{{user.permission}}</div>
     <div>状态：{{user.status}}</div>
     <div>创建日期：{{user.created_at | moment("YYYY-MM-DD h:mm:ss") }}</div>
   </div>
@@ -23,7 +24,7 @@
     },
     methods: {
       getUserInfo: function() {
-        API.userGetInfo(this.$route.params.userID).then((res) => {
+        API.userGetInfo(this.$route.params.userId).then((res) => {
           if (res.status === 0) {
             this.user = res.data;
           }

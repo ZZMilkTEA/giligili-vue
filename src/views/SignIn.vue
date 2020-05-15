@@ -42,11 +42,11 @@ export default {
           this.$store.commit('setToken', res.data);
           this.$notify({
             title: '登陆成功',
-            message: '登陆成功，回到上一页面',
+            message: '登陆成功，进入主页',
             type: 'success',
           });
           this.$parent.reload();
-          this.$router.go(-1);
+          this.$router.push({name:'home'});
         }
       }).catch((error) => {
         this.$notify.error({

@@ -7,10 +7,10 @@ const postVideo = (form,token) => axios.post('/api/v1/videos', form,{headers:{'t
 const getVideo = id => axios.get(`/api/v1/videos/${id}`).then(res => res.data);
 
 // 读取视频列表
-const getPassedVideos = (start, limit) => axios.get('/api/v1/passed-videos', { params: { start, limit } }).then(res => res.data);
+const listPassedVideos = (start, limit) => axios.get('/api/v1/passed-videos', { params: { start, limit } }).then(res => res.data);
 
 export {
-  getPassedVideos,
+  listPassedVideos,
   getVideo,
   postVideo,
 };

@@ -14,6 +14,11 @@
     <div class="video-info">
       <pre>{{video.info}}</pre>
     </div>
+
+    <h3>评论</h3>
+    <el-divider></el-divider>
+    <comment-sender></comment-sender>
+    <comment-list></comment-list>
   </div>
 </template>
 
@@ -21,6 +26,9 @@
 import 'video.js/dist/video-js.css';
 import { videoPlayer } from 'vue-video-player';
 import * as API from '@/api/video/';
+import commentSender from '../components/comment/CommentSender';
+import commentList from '../components/comment/CommentList';
+
 
 export default {
   name: 'ShowVideo',
@@ -39,7 +47,7 @@ export default {
   },
   methods: {
     load() {
-      API.getVideo(this.$route.params.videoId).then((res) => {
+      API.getVideo(this.$route.params.id).then((res) => {
         this.video = res.data;
         this.playerOptions.sources[0].src = this.video.url;
       });
@@ -47,6 +55,9 @@ export default {
   },
   components: {
     videoPlayer,
+    commentSender,
+    commentList,
+
   },
   beforeMount() {
     this.load();
@@ -59,7 +70,7 @@ export default {
   margin-bottom: 16px;
 }
 .video-header h2{
-  margin-bottom: 0px;
+  margin-bottom: 0;
   font-size: 18px;
   font-weight: 500;
   color: #212121;
