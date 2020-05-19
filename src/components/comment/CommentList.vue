@@ -32,7 +32,7 @@
 
       methods:{
         load() {
-          API.listCommentsByVideoId(this.start, this.limit, this.$route.params.id).then((res) => {
+          API.listCommentsById(this.start, this.limit, this.type, this.$route.params.id).then((res) => {
             this.comments = res.data.items;
             this.total = res.data.total;
           });
@@ -47,7 +47,7 @@
 
 <style scoped>
   .comment-list {
-    margin-top: 2em;
-    margin-left: 5em;
+    max-width: 960px;
+    margin: 2em auto;
   }
 </style>

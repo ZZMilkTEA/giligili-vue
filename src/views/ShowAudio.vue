@@ -1,59 +1,58 @@
 <template>
-  <div class="show-video">
+  <div class="show-audio">
 
     <div class="header">
-      <div class="video-header">
-        <h2>{{video.title}}</h2>
-        <div class="video-data">
-          {{video.created_at | moment("YYYY-MM-DD h:mm:ss") }}创建 ·
-          {{video.view}}观赏
+      <div class="audio-header">
+        <h2>{{audio.title}}</h2>
+        <div class="audio-data">
+          {{audio.created_at | moment("YYYY-MM-DD h:mm:ss") }}创建 ·
+          {{audio.view}}观赏
         </div>
       </div>
 
-      <div class="poster-info" @click="goUserPage(video.user.id)">
-        <span class="poster-nickname">{{video.user.nickname}}</span>
+      <div class="poster-info" @click="goUserPage(audio.user.id)">
+        <span class="poster-nickname">{{audio.user.nickname}}</span>
         <div class="poster-avatar">
-          <el-avatar  v-if="video.user.avatar" class="poster-avatar"
-                      :src="video.user.avatar"></el-avatar>
-          <el-avatar v-else :size="50" class="poster-avatar" icon="el-icon-user-solid"></el-avatar>
+          <el-avatar  v-if="audio.user.avatar" class="poster-avatar"
+                      :src="audio.user.avatar"></el-avatar>
+          <el-avatar v-else :size="50" class="user-avatar" icon="el-icon-user-solid"></el-avatar>
         </div>
       </div>
     </div>
 
-    <video-player
-      class="video-player-box"
-      :options="playerOptions">
-    </video-player>
-
-    <div class="video-info">
-      <pre>{{video.info}}</pre>
+    <audio :src="audio.url" controls="controls">    </audio>
+    <div class="audio-info">
+      <pre>{{audio.info}}</pre>
     </div>
 
     <el-divider></el-divider>
     <h3>评论</h3>
     <comment-sender></comment-sender>
-    <comment-list type="video"></comment-list>
+    <comment-list type="audio"></comment-list>
   </div>
 </template>
 
 <script>
 import 'video.js/dist/video-js.css';
 import { videoPlayer } from 'vue-video-player';
-import * as API from '../api/video/';
+import * as API from '../api/audio/';
 import commentSender from '../components/comment/CommentSender';
 import commentList from '../components/comment/CommentList';
 
 
 export default {
-  name: 'ShowVideo',
+  name: 'ShowAudio',
   data() {
     return {
-      video: {},
+      audio: {},
       playerOptions: {
-        fluid: true,
+        fluid: false,
         autoplay: false,
+        height: "60",
+        width:'720',
+        preload: 'auto',
         sources: [{
-          type: 'video/mp4',
+          type: 'audio/mp4',
           src: '',
         }],
       },
@@ -61,15 +60,15 @@ export default {
   },
   methods: {
     load() {
-      API.getVideo(this.$route.params.id).then((res) => {
-        this.video = res.data;
-        this.playerOptions.sources[0].src = this.video.url;
+      API.getAudio(this.$route.params.id).then((res) => {
+        this.audio = res.data;
+        this.playerOptions.sources[0].src = this.audio.url;
       });
     },
 
     goUserPage(uid){
       this.$router.push({name: 'User', params: {id: uid}})
-    }
+    },
   },
 
 
@@ -88,16 +87,18 @@ export default {
 <style>
  .header {
   margin-bottom: 16px;
-} .header:after{
+   max-width: 800px;
+}
+ .header:after{
      content: "";
      display: block;
      clear: both;
    }
- .video-header {
+ .audio-header {
    float: left;
  }
 
-.video-header h2{
+.audio-header h2{
   margin-bottom: 0;
   font-size: 18px;
   font-weight: 500;
@@ -108,16 +109,16 @@ export default {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.video-data {
+.audio-data {
   margin-top: 6px;
   font-size: 12px;
   color: #999;
 }
 
-.show-video .video-info {
+.show-audio .audio-info {
   white-space: pre-line;
   transition: all .3s;
-  font-size: 1.2em;
+  font-size: 1em;
   color: #212121;
   letter-spacing: 0;
   line-height: 18px;
@@ -126,19 +127,21 @@ export default {
   overflow: hidden;
 }
 
- .poster-info{
-   float: right;
-   display: inline;
-   margin-top: 12px;
- }
- .poster-info:hover {
-  color: #00a1d6;
-   cursor: pointer;
+.poster-info{
+  float: right;
+  display: inline;
+  margin-top: 12px;
 }
+
  .poster-nickname{
    float: right;
    font-size: 1em;
  }
+
+.poster-info:hover {
+  color: #00a1d6;
+  cursor: pointer;
+}
 
 .poster-avatar{
   float: right;

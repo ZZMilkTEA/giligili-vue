@@ -5,13 +5,21 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    token:''
+    token:'',
+    userNickname:'',
+    userId:'',
+    avatar:'',
   },
   mutations: {
     setToken(state, token) {
       state.token = token;
       localStorage.token = token //同步存储token至localStorage
     },
+    setUser(state, user) {
+      state.userNickname = user.nickname;
+      state.userId = user.user_id;
+      state.avatar = user.avatar;
+    }
 
   },
   getters : {
@@ -22,9 +30,17 @@ export default new Vuex.Store({
         state.token = localStorage.getItem('token')
       }
       return state.token
-    }
+    },
+    getUserNickname(state) {
+      return state.userNickname;
+    },
+    getUserId(state) {
+      return state.userId;
+    },
+    getUserAvatar(state) {
+      return state.avatar;
+    },
   },
   actions: {
-
   },
 });

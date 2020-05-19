@@ -1,13 +1,18 @@
 <template>
     <div class="comment-send">
-      <el-input
-        type="textarea"
-        :rows="2"
-        placeholder="请自觉遵守互联网相关的政策法规，严禁发布色情、暴力、反动的言论。"
-        v-model="form.content"
-        class="ipt-txt">
-      </el-input>
-      <el-button type="primary" class="comment-submit" @click="onSubmit">发送</el-button>
+      <h3 v-if="this.$store.getters.getUserId === ''">
+        评论前请先登录
+      </h3>
+      <div v-else>
+        <el-input
+          type="textarea"
+          :rows="2"
+          placeholder="请自觉遵守互联网相关的政策法规，严禁发布色情、暴力、反动的言论。"
+          v-model="form.content"
+          class="ipt-txt">
+        </el-input>
+        <el-button type="primary" class="comment-submit" @click="onSubmit">发送</el-button>
+      </div>
     </div>
 </template>
 
@@ -21,12 +26,27 @@
         return {
           form:{
             content: '',
+            type:''
           },
         }
       },
 
       methods:{
         onSubmit() {
+          if (this.form.content === ''){
+            this.$notify.warning({
+              title:'评论失败',
+              message: '请输入评论内容',
+            });
+            return
+          }
+          if (this.$route.name === "ShowVideo"){
+            this.form.type = "video";
+          }
+          if (this.$route.name === "ShowAudio"){
+            this.form.type = "audio";
+          }
+
           API.postComment(this.form, this.$route.params.id, this.$store.getters.getToken).then((res) => {
             if (res.status > 0) {
               this.$notify.warning({

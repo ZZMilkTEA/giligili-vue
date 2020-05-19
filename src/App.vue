@@ -7,6 +7,7 @@
 
 <script>
 import NavBar from '@/components/NavBar.vue';
+import * as API from "./api/user";
 
 export default {
   name: 'App',
@@ -22,7 +23,7 @@ export default {
     reload(){
       this.isNavAlive = false;
       this.$nextTick(() => (this.isNavAlive = true))
-    }
+    },
   }
 };
 </script>

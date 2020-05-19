@@ -1,6 +1,6 @@
 <template>
   <el-card class="user-card" @click.native="goUser(cardInfo.user)">
-    <img v-if="cardInfo.avatar.length !== 0" class="user-avatar" :src="cardInfo.avatar">
+    <img v-if="cardInfo.avatar.length !== 0" class="poster-avatar" :src="cardInfo.avatar">
     <el-avatar :size="50" icon="el-icon-user-solid"></el-avatar>
     <div>
       <div class="user-nickname">{{cardInfo.nickname}}</div>
@@ -26,7 +26,7 @@
 
       methods:{
         goUser(user) {
-          this.$router.push({name: 'User', params: {userId: user.id}});
+          this.$router.push({name: 'User', params: {id: user.id}});
         },
       }
     }

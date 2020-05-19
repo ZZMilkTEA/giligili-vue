@@ -1,11 +1,11 @@
 <template>
   <div class="comment-show">
     <div class="comment-user">
-
-      <el-avatar  v-if="commentInfo.avatar" class="user-avatar"
-                  :src="commentInfo.avatar"></el-avatar>
-      <el-avatar  v-else class="user-avatar"
-                  src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
+      <div class="user-avatar">
+        <el-avatar  v-if="commentInfo.avatar"
+                    :src="commentInfo.avatar"></el-avatar>
+        <el-avatar v-else class="user-avatar" :size="40" icon="el-icon-user-solid"></el-avatar>
+      </div>
       <div class="info">
         <div class="user-name">{{commentInfo.nickname}}</div>
         <div class="comment-time">{{commentInfo.time | moment("YYYY-MM-DD h:mm:ss")}}</div>
@@ -38,12 +38,15 @@
   }
 
   .comment-time {
-    font-size: 0.8em
-  ;
+    font-size: 0.8em;
   }
 
   .comment-content {
     margin-top: 1em;
     margin-left: 2em;
+  }
+
+  .user-name:hover {
+    color: #00a1d6;
   }
 </style>

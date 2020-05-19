@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import VideoCard from "../components/VideoCard";
+import VideoCard from "../components/MediaCard";
 import SearchBox from "../components/SearchBox";
 import UserCard from "../components/UserCard"
 import * as API from "../api/search";

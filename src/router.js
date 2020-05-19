@@ -8,18 +8,23 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'home',
+      name: 'Home',
       component: Home,
     },
     {
-      path: '/postvideo',
-      name: 'postVideo',
-      component: () => import(/* webpackChunkName: "video" */ './views/PostVideo.vue'),
+      path: '/post-media',
+      name: 'PostMedia',
+      component: () => import(/* webpackChunkName: "video" */ './views/PostMedia.vue'),
     },
     {
       path: '/video/:id',
-      name: 'showVideo',
+      name: 'ShowVideo',
       component: () => import(/* webpackChunkName: "video" */ './views/ShowVideo.vue'),
+    },
+    {
+      path: '/audio/:id',
+      name: 'ShowAudio',
+      component: () => import(/* webpackChunkName: "video" */ './views/ShowAudio'),
     },
     {
       path: '/about',

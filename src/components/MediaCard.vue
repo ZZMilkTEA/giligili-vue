@@ -1,5 +1,5 @@
 <template>
-  <el-card class="video-card" @click.native="goVideo(cardInfo.video)">
+  <el-card class="video-card" @click.native="goMedia(cardInfo.item)">
     <div class="cardContainer-picContainer">
       <img v-if="cardInfo.avatar" class="video-avatar"  :src="cardInfo.avatar">
       <img v-else class="video-avatar"  src="../assets/video-avatar.jpg">
@@ -15,12 +15,13 @@
 
 <script>
     export default {
-      name: "VideoCard",
+      name: "MediaCard",
 
       props: {
         cardInfo:{
           default: () => {}
-        }
+        },
+        type: String,
       },
 
       data(){
@@ -29,8 +30,15 @@
       },
 
       methods:{
-        goVideo(video) {
-          this.$router.push({name: 'showVideo', params: {id: video.id}});
+        goMedia(item) {
+          if (this.type === 'video'){
+            this.$router.push({name: 'ShowVideo', params: {id: item.id}});
+            return;
+          }
+          if (this.type === 'audio'){
+            this.$router.push({name: 'ShowAudio', params: {id: item.id}});
+            return;
+          }
         },
       }
     }
