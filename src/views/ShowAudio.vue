@@ -20,7 +20,8 @@
       </div>
     </div>
 
-    <audio :src="audio.url" controls="controls">    </audio>
+    <audio-shower :file="this.audio.url"></audio-shower>
+
     <div class="audio-info">
       <pre>{{audio.info}}</pre>
     </div>
@@ -33,29 +34,26 @@
 </template>
 
 <script>
-import 'video.js/dist/video-js.css';
-import { videoPlayer } from 'vue-video-player';
 import * as API from '../api/audio/';
 import commentSender from '../components/comment/CommentSender';
 import commentList from '../components/comment/CommentList';
-
+import audioShower from  '../components/audioShow/AudioShower'
 
 export default {
   name: 'ShowAudio',
+
+  components: {
+    commentSender,
+    commentList,
+    audioShower,
+  },
+  beforeMount() {
+    this.load();
+  },
+
   data() {
     return {
       audio: {},
-      playerOptions: {
-        fluid: false,
-        autoplay: false,
-        height: "60",
-        width:'720',
-        preload: 'auto',
-        sources: [{
-          type: 'audio/mp4',
-          src: '',
-        }],
-      },
     };
   },
   methods: {
@@ -65,23 +63,13 @@ export default {
         this.playerOptions.sources[0].src = this.audio.url;
       });
     },
-
     goUserPage(uid){
       this.$router.push({name: 'User', params: {id: uid}})
     },
-  },
 
-
-  components: {
-    videoPlayer,
-    commentSender,
-    commentList,
-
-  },
-  beforeMount() {
-    this.load();
   },
 };
+
 </script>
 
 <style>
@@ -147,4 +135,8 @@ export default {
   float: right;
   margin-right: 0.5em;
 }
+
+ audio {
+   display: block;
+ }
 </style>

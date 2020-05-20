@@ -6,15 +6,15 @@
     <el-menu-item index="/about">关于我们</el-menu-item>
 
     <div class="user-area">
-      <div v-if="!this.userNickname">
+      <div v-if="!userNickname">
         <router-link to="/signUp" ><el-button type="primary" class="navRightEl" id="sign_up" >注册</el-button></router-link>
         <router-link to="/signIn" ><el-button type="primary"  class="navRightEl" id="login" >登陆</el-button></router-link>
       </div>
       <div v-else>
         <el-button type="warning" class="navRightEl" v-on:click="onLogout">登出</el-button>
-        <div class="user-info" @click="goUserPage(this.$store.getters.getUserId)">
-          <span class="navRightEl">{{this.userNickname}}</span>
-          <el-avatar v-if="this.userAvatar" v-else :size="50" class="navRightEl" :src="this.userAvatar"></el-avatar>
+        <div class="user-info" @click="goUserPage($store.getters.getUserId)">
+          <span class="navRightEl">{{userNickname}}</span>
+          <el-avatar v-if="userAvatar" v-else :size="50" class="navRightEl" :src="this.userAvatar"></el-avatar>
           <el-avatar v-else :size="60" class="navRightEl" icon="el-icon-user-solid"></el-avatar>
         </div>
       </div>
@@ -50,11 +50,26 @@ export default {
 
     //用户昵称、id获取
     getUserInfo: function () {
-      API.userTokenGetInfo(this.$store.getters.getToken).then((res) =>{
-          this.$store.commit('setUser', res.data);
-          this.userNickname = this.$store.getters.getUserNickname;
-          this.userAvatar = this.$store.getters.getUserAvatar;
-      });
+      let token = this.$store.getters.getToken;
+      if (token !== ''){
+        API.userTokenRefresh(token) .then((res) =>{
+          if (res.status === 0) {
+            this.$store.commit('setToken', res.data);
+            API.userTokenGetInfo(token).then((res) =>{
+              this.$store.commit('setUser', res.data);
+              this.userNickname = this.$store.getters.getUserNickname;
+              this.userAvatar = this.$store.getters.getUserAvatar;
+            });
+          } else {
+            this.$store.commit('setToken','')
+            this.$notify({
+              title: '登录超时',
+              message: `如需登录请重新登陆`,
+              type: 'warning',
+            });
+          }
+        });
+      }
     },
 
     goUserPage(uid){

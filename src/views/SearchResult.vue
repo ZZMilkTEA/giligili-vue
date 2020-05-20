@@ -4,7 +4,7 @@
     <el-form ref="form" style="margin-top: 15px;">
       <el-input placeholder="请输入内容" v-model="keyword" @keyup.enter.native="doSearch"
                 style="width: 20em" class="input">
-        <el-button slot="append" icon="el-icon-search" @click="doSearch"></el-button>
+        <el-button type="submit" slot="append" icon="el-icon-search" @click="doSearch"></el-button>
       </el-input>
       <el-form-item label="搜索类型">
         <el-radio-group v-model="searchType" @change="doSearch">
@@ -16,6 +16,7 @@
 
     <div class="top">
       <el-row :gutter="20">
+        <div class="is-result-none" v-if="res.length === 0">没有结果哦</div>
         <el-col v-if="searchType === 'video'" :xs="24" :sm="6" :md="6" v-for="video in res" :key="video.id">
           <video-card
             v-bind:card-info="{video:video, avatar:video.avatar,
@@ -76,6 +77,7 @@ export default {
 
   methods: {
     doSearch(){
+      this.res = [];
       this.$router.push({name: 'Search', query: {keyword: this.keyword,
           searchType:this.searchType, start: this.start, limit: this.limit}})
     },
@@ -122,5 +124,8 @@ export default {
 </script>
 
 <style>
-
+  .is-result-none {
+    color: #555555;
+    text-align: center;
+  }
 </style>

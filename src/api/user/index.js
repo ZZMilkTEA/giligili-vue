@@ -12,6 +12,8 @@ const userGetInfo = id => axios.get(`/api/v1/user/${id}`).then(res => res.data);
 //获取登陆用户信息
 const userTokenGetInfo = token => axios.get('/api/v1/verify',{headers:{'token':token}}).then(res => res.data);
 
+const userTokenRefresh = token => axios.get('/api/v1/refresh', {headers:{'token':token}}).then(res => res.data);
+
 //改变用户信息
 const changeUserAvatar = (form, id, token) => axios.put(`/api/v1/user/${id}/avatar`,form,{headers:{'token':token}}).then(res => res.data);
 
@@ -21,5 +23,6 @@ export {
   userGetInfo,
   userRegister,
   userTokenGetInfo,
+  userTokenRefresh,
   changeUserAvatar,
 };

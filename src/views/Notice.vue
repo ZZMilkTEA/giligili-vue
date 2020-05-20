@@ -4,11 +4,21 @@
     <div>
       <h2>未实现的饼</h2>
       <ul>
-        <li>头像上传</li>
         <li>举报功能</li>
         <li>个人视频管理</li>
       </ul>
       <h2>更新情况</h2>
+
+      <el-card class="box-card">
+        <h3 slot="header" class="clearfix">
+          <span>v0.3.0</span>
+        </h3>
+        <ul>
+          <li>音频投稿相关内容</li>
+          <li>加入头像上传功能</li>
+          <li>个人信息增加显示自己的稿件功能</li>
+        </ul>
+      </el-card>
 
       <el-card class="box-card">
         <h3 slot="header" class="clearfix">

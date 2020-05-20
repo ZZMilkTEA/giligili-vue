@@ -1,6 +1,6 @@
 <template>
   <div class="comment-show">
-    <div class="comment-user">
+    <div class="comment-user" @click="goUserPage(commentInfo.id)">
       <div class="user-avatar">
         <el-avatar  v-if="commentInfo.avatar"
                     :src="commentInfo.avatar"></el-avatar>
@@ -17,13 +17,19 @@
 
 <script>
     export default {
-        name: "CommentShow",
+      name: "CommentShow",
 
       props: {
           commentInfo:{
             default: () => {}
           }
-    },
+      },
+
+      methods:{
+        goUserPage(uid){
+          this.$router.push({name: 'User', params: {id: uid}})
+        },
+      }
     }
 </script>
 
@@ -46,7 +52,8 @@
     margin-left: 2em;
   }
 
-  .user-name:hover {
+  .comment-user:hover {
     color: #00a1d6;
+    cursor: pointer;
   }
 </style>

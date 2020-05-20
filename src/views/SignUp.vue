@@ -1,18 +1,18 @@
 <template>
   <div class="sign_up">
     <h2>注册：</h2>
-    <el-form ref="form" :model="form" label-width="80px">
-      <el-form-item label="用户名">
+    <el-form ref="form" :model="form" label-width="80px" :rules="rules">
+      <el-form-item label="用户名" prop="user_name">
         <el-input v-model="form.user_name"></el-input>
       </el-form-item>
-      <el-form-item label="昵称">
+      <el-form-item label="昵称" prop="nickname">
         <el-input v-model="form.nickname"></el-input>
       </el-form-item>
 
-      <el-form-item label="密码">
+      <el-form-item label="密码" prop="password">
         <el-input show-password v-model="form.password"></el-input>
       </el-form-item>
-      <el-form-item label="确认密码">
+      <el-form-item label="确认密码" prop="password_confirm">
         <el-input show-password v-model="form.password_confirm"></el-input>
       </el-form-item>
       <el-form-item>
@@ -28,6 +28,25 @@ import * as API from '../api/user';
 export default {
   name: 'SignUp',
   data() {
+    var validatePass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入密码'));
+      } else {
+        if (this.ruleForm.checkPass !== '') {
+          this.$refs.ruleForm.validateField('checkPass');
+        }
+        callback();
+      }
+    };
+    var validatePass2 = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'));
+      } else if (value !== this.ruleForm.pass) {
+        callback(new Error('两次输入密码不一致!'));
+      } else {
+        callback();
+      }
+    };
     return {
       form: {
         user_name: '',
@@ -35,6 +54,25 @@ export default {
         password: '',
         password_confirm: '',
       },
+      rules: {
+        user_name: [
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { min: 2, max: 30, message: '长度在 2 到 30 个字符', trigger: 'blur' },
+          { whitespace: "true", message: '不得包含空格'}
+        ],
+        nickname: [
+          { required: true, message: '请输入昵称', trigger: 'blur' },
+          { min: 5, max: 30, message: '长度在 5 到 30 个字符', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { validator: validatePass, trigger: 'blur' }
+        ],
+        password_confirm: [
+          { required: true, message: '请再次输入密码', trigger: 'blur' },
+          { validator: validatePass2, trigger: 'blur' }
+        ],
+      }
     };
   },
   methods: {

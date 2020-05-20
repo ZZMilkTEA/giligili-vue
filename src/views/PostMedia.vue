@@ -3,7 +3,7 @@
     <div v-if="formShow">
       <h2>欢迎投稿：</h2>
 
-      <el-form ref="form" :model="form" label-width="10em">
+      <el-form ref="form" :model="form" label-width="10em" :rules="rules">
 
         <el-form-item label="投稿种类">
           <el-radio-group v-model="uploadType">
@@ -12,31 +12,36 @@
           </el-radio-group>
         </el-form-item>
 
-        <el-form-item label="标题">
-          <el-input v-model="form.title"></el-input>
+        <el-form-item label="标题" prop="title">
+          <el-input
+            maxlength="30"
+            show-word-limit
+            v-model="form.title"
+          >
+          </el-input>
         </el-form-item>
 
-        <el-form-item label="分区">
-          <el-select  v-model="form.type">
+        <el-form-item label="分区" prop="kind">
+          <el-select  v-model="form.kind">
             <el-option label="教育" value="education"></el-option>
             <el-option label="美食" value="food"></el-option>
             <el-option label="科技" value="technology"></el-option>
           </el-select>
         </el-form-item>
 
-        <el-form-item label="视频投稿方式">
+        <el-form-item label="投稿方式">
           <el-radio-group v-model="uploadMethod">
             <el-radio label="0">自己上传</el-radio>
             <el-radio label="1">外链资源</el-radio>
           </el-radio-group>
         </el-form-item>
 
-        <el-form-item v-if="form.from_outside" label="视频地址">
+        <el-form-item v-if="form.from_outside" label="地址" prop="url">
           <el-input type="url" v-model="form.url"></el-input>
         </el-form-item>
 
 
-        <el-form-item v-if="!form.from_outside" label="媒体文件">
+        <el-form-item v-if="!form.from_outside" label="媒体文件" prop="file">
           <el-upload v-if="uploadType === 'video'"
             class="video-uploader"
             drag
@@ -47,8 +52,8 @@
             <div v-if="progress.showProgress === false">
               <i class="el-icon-upload"></i>
               <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-              <div class="el-upload__tip" slot="tip">只能上传mp4文件，且不超过300mb</div>
             </div>
+            <div class="el-upload__tip" slot="tip">只能上传mp4文件，且不超过300mb</div>
             <el-progress v-if="progress.showProgress === true" type="circle" :percentage="progress.uploadPercent"
                          :status="progress.status" style="margin-top:30px;"></el-progress>
           </el-upload>
@@ -63,8 +68,8 @@
             <div v-if="progress.showProgress === false">
               <i class="el-icon-upload"></i>
               <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-              <div class="el-upload__tip" slot="tip">只能上传mp3文件，且不超过20mb</div>
             </div>
+            <div class="el-upload__tip" slot="tip">只能上传mp3文件，且不超过20mb</div>
             <el-progress v-if="progress.showProgress === true" type="circle" :percentage="progress.uploadPercent"
                          :status="progress.status" style="margin-top:30px;"></el-progress>
           </el-upload>
@@ -86,7 +91,11 @@
             :show-file-list="false">
             <img v-if="imageUrl" :src="imageUrl" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-            <div class="el-upload__tip" slot="tip">只能上传png/jpg文件，且不超过500kb</div>
+            <div class="el-upload__tip" slot="tip">
+              只能上传png/jpg文件，且不超过500kb
+              <br>
+              封面可不加，将使用默认封面
+            </div>
           </el-upload>
         </el-form-item>
 
@@ -124,13 +133,28 @@ export default {
         info: '',
         url: '',
         avatar: '',
-        type: '',
+        kind: '',
         from_outside: false,
       },
       progress:{
         showProgress:false,
         uploadPercent:0,
         status:'',
+      },
+      rules: {
+        title: [
+          { required: true, message: '请输入稿件标题', trigger: 'blur' },
+          { min: 2, max: 30, message: '长度在 2 到 30 个字符', trigger: 'blur' }
+        ],
+        url: [
+          { required: true, message: '请输入稿件地址', trigger: 'blur' },
+        ],
+        kind: [
+          { required: true, message: '请选择分区', trigger: 'blur' },
+        ],
+        file: [
+          { required: true, message: '请上传文件', trigger: 'blur' },
+        ]
       },
     };
   },
@@ -168,6 +192,7 @@ export default {
       uploadAPI.postUploadToken(option.file.name,this.$store.getters.getToken).then((res) => {
         const oReq = new XMLHttpRequest();
         oReq.open('PUT', res.data.put, true);
+        oReq.send(option.file);
         oReq.upload.addEventListener("progress",this.progressFunction,false); //调用方法监听上传进度
         oReq.onload = () => {
           this.form.url = res.data.key;
@@ -177,7 +202,6 @@ export default {
             message: "视频上传完成"
           });
         };
-        oReq.send(option.file);
 
       }).catch((error) => {
         this.$notify.error({
@@ -312,8 +336,8 @@ export default {
       }
     },
   },
-  beforeMount() {
-    if(this.$store.getters.getUserId !== ''){
+  mounted() {
+    if(this.$store.getters.getToken !== ''){
       this.formShow = true;
     }
   }
@@ -323,6 +347,7 @@ export default {
 </script>
 
 <style>
+  @import "~element-ui/lib/theme-chalk/index.css";
 
   .avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;
@@ -342,18 +367,7 @@ export default {
     line-height: 178px;
     text-align: center;
   }
-  .video-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
-    text-align: center;
-  }
 
-  .el-upload__tip{
-    margin-top: -1em;
-  }
   .avatar {
     max-width: 178px;
     max-height: 178px;

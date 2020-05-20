@@ -46,7 +46,7 @@ export default {
             type: 'success',
           });
           this.$parent.reload();
-          this.$router.push({name:'home'});
+          this.$router.push({name:'Home'});
         }
       }).catch((error) => {
         this.$notify.error({
