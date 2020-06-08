@@ -66,10 +66,12 @@ export default {
         ],
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' },
+          { min: 8, max: 30, message: '长度在 8 到 40 个字符', trigger: 'blur' },
           { validator: validatePass, trigger: 'blur' }
         ],
         password_confirm: [
           { required: true, message: '请再次输入密码', trigger: 'blur' },
+          { min: 8, max: 30, message: '长度在 8 到 40 个字符', trigger: 'blur' },
           { validator: validatePass2, trigger: 'blur' }
         ],
       }
@@ -83,7 +85,7 @@ export default {
             title: '注册成功',
             message: res.msg,
           });
-          this.$router.push({name:'login'});
+          this.$router.push({name:'SignIn'});
         } else {
           this.$notify.error({
             title: '注册失败',

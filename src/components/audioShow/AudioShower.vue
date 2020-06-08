@@ -101,16 +101,15 @@
       this.musicSourceNode = this.audioCtx.createMediaElementSource(this.audio);
       this.gainNode = this.audioCtx.createGain();
       this.analyser = this.audioCtx.createAnalyser();
-      console.log(this.analyser);
       //一些参数设置
 
       this.gainNode.gain.value =0.5;
-      this.analyser.fftSize = 256;
+      this.analyser.fftSize = 1024;
       //结点的连接
       this.musicSourceNode.connect(this.gainNode);
       this.gainNode.connect(this.analyser);
       this.analyser.connect(this.audioCtx.destination);
-      //定义频域数据的容器
+      //定义音频数据的容器
       this.bufferLength = this.analyser.frequencyBinCount;
       this.dataArray = new Uint8Array(this.bufferLength);
 
@@ -121,11 +120,11 @@
         this.particles[i] =new this.Particle(
           this.randomInt(0,600),
           this.randomInt(0,300),
-          this.randomInt(8,14),
+          this.randomInt(10,16),
           this.colorRgb(this.randomInt(0,255),this.randomInt(0,255),this.randomInt(0,255)),
           this.randomFloat(-1,1),
           this.randomFloat(-1,1),
-          this.randomType(this.randomInt(0,2)));
+          this.randomType());
       }
 
       this.draw();
@@ -135,7 +134,7 @@
     draw(){
       this.vueCtx.clearRect(0,0,600,300);
       for(let i = 0; i < this.particles.length; i++){
-        // 画
+        // 画粒子
         this.vueCtx.beginPath();
         this.vueCtx.arc(this.particles[i].x, this.particles[i].y, this.particles[i].radius * this.particles[i].ratio,0,
           Math.PI * 2,true);
@@ -143,34 +142,37 @@
         this.vueCtx.fillStyle = this.particles[i].color;
         this.vueCtx.fill();
 
-        //改状态
+        //根据频域数据修改粒子状态
         this.analyser.getByteFrequencyData(this.dataArray);
-        let arr = this.dataArray.slice(4, 6);
-        let sum = arr.reduce(function (a, b) {return a + b}, 0) / arr.length / 150;
-        if(!sum || sum > 6) {
+        let arr = this.dataArray.slice(0, 2);
+        let sum = arr.reduce(function (a, b) {return a + b}, 0) / arr.length / 130;
+
+        sum = sum*sum;
+        if(!sum || sum < 0.7) {
           sum = 0.2;
         }
-        sum = Math.max(sum*sum, 0.2);
         this.particles[i].move(sum);
         switch (this.particles[i].type) {
-          case "low":arr = this.dataArray.slice(0,40);
-            sum = arr.reduce(function(a,b){return a+b},0)*0.1;
+          case "low":
+            arr = this.dataArray.slice(0,20);
+            sum = arr.reduce(function(a,b){return a+b},0) / arr.length * 0.02  ;
             break;
           case "mid":
-            arr = this.dataArray.slice(41,65);
-            sum = arr.reduce(function(a,b){return a+b},0)*0.1;
+            arr = this.dataArray.slice(57,67);
+            sum = arr.reduce(function(a,b){return a+b},0) / arr.length * 0.02 ;
             break;
           case "high":
-            arr = this.dataArray.slice(66,128);
-            sum = arr.reduce(function(a,b){return a+b},0)*0.13;
+            arr = this.dataArray.slice(104,118);
+            sum = arr.reduce(function(a,b){return a+b},0) / arr.length * 0.02 ;
             break;
         }
-        sum = sum / 300
-        if(!sum || sum < 0.3) {
-          sum = 0.3;
+
+        sum = (1+ sum)*(1+ sum/2)/4;
+        if(!sum || sum < 0.5) {
+          sum = 0.5;
         }
-        sum = Math.min(sum, 2);
-        this.particles[i].ratio = (1+ sum)*(1+ sum/2)/3;
+        this.particles[i].ratio = sum;
+
       }
       requestAnimationFrame(this.draw);
     },

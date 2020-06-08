@@ -1,6 +1,6 @@
 <template>
   <div class="comment-show">
-    <div class="comment-user" @click="goUserPage(commentInfo.id)">
+    <div class="comment-user" @click="goUserPage(commentInfo.user.id)">
       <div class="user-avatar">
         <el-avatar  v-if="commentInfo.avatar"
                     :src="commentInfo.avatar"></el-avatar>
@@ -12,10 +12,18 @@
       </div>
     </div>
     <div class="comment-content">{{commentInfo.content}}</div>
+
+    <report-button style="position:relative;left:30em;bottom:0;color: #ffa8a3"
+                   report-type="comment"
+                   :reported-id="commentInfo.id"
+                   :reported-name="commentInfo.content"
+    ></report-button>
   </div>
 </template>
 
 <script>
+  import reportButton from  '../ReportButton';
+
     export default {
       name: "CommentShow",
 
@@ -25,9 +33,14 @@
           }
       },
 
+      components:{
+        reportButton,
+      },
+
       methods:{
         goUserPage(uid){
-          this.$router.push({name: 'User', params: {id: uid}})
+          let routeData = this.$router.resolve({name: 'User', params: {id: uid}});
+          window.open(routeData.href, '_blank')
         },
       }
     }

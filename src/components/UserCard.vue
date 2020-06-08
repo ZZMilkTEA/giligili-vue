@@ -1,7 +1,7 @@
 <template>
   <el-card class="user-card" @click.native="goUser(cardInfo.user)">
-    <img v-if="cardInfo.avatar.length !== 0" class="poster-avatar" :src="cardInfo.avatar">
-    <el-avatar :size="50" icon="el-icon-user-solid"></el-avatar>
+    <el-avatar v-if="cardInfo.avatar" :size="50" class="user-avatar" :src="cardInfo.avatar"></el-avatar>
+    <el-avatar v-else :size="50" class="user-avatar" icon="el-icon-user-solid"></el-avatar>
     <div>
       <div class="user-nickname">{{cardInfo.nickname}}</div>
     </div>
@@ -26,7 +26,8 @@
 
       methods:{
         goUser(user) {
-          this.$router.push({name: 'User', params: {id: user.id}});
+          let routeData = this.$router.resolve({name: 'User', params: {id: user.id}});
+          window.open(routeData.href, '_blank');
         },
       }
     }
@@ -41,6 +42,7 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+    float: left;
   }
   .user-bottom {
     margin-top: 4px;

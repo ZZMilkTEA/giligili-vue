@@ -20,10 +20,25 @@
       </div>
     </div>
 
+    <vue-baberrage class="baberrage"
+        :isShow= "barrageIsShow"
+        :barrageList = "barrageList"
+        :loop = "barrageLoop"
+         :throttleGap = "2000"
+         :box-height="300"
+    >
+    </vue-baberrage>
+
     <video-player
       class="video-player-box"
       :options="playerOptions">
     </video-player>
+    <el-button type="primary" @click="barrageIsShow = !barrageIsShow" > 弹幕开关</el-button>
+    <report-button style="float: right;color: #dd6161;"
+                   report-type="video"
+                   :reported-id="video.id"
+                   :reported-name="video.title"
+    ></report-button>
 
     <div class="video-info">
       <pre>{{video.info}}</pre>
@@ -32,7 +47,7 @@
     <el-divider></el-divider>
     <h3>评论</h3>
     <comment-sender></comment-sender>
-    <comment-list type="video"></comment-list>
+    <comment-list type="video" ref="commentList"></comment-list>
   </div>
 </template>
 
@@ -42,10 +57,19 @@ import { videoPlayer } from 'vue-video-player';
 import * as API from '../api/video/';
 import commentSender from '../components/comment/CommentSender';
 import commentList from '../components/comment/CommentList';
+import reportButton from  '../components/ReportButton';
+import { MESSAGE_TYPE } from 'vue-baberrage';
 
 
 export default {
   name: 'ShowVideo',
+  components: {
+    videoPlayer,
+    commentSender,
+    commentList,
+    reportButton,
+  },
+
   data() {
     return {
       video: {},
@@ -57,42 +81,84 @@ export default {
           src: '',
         }],
       },
+
+      barrageIsShow: false,
+      barrageLoop: false,
+      barrageList: [],
+
     };
   },
-  methods: {
-    load() {
-      API.getVideo(this.$route.params.id).then((res) => {
-        this.video = res.data;
-        this.playerOptions.sources[0].src = this.video.url;
-      });
-    },
 
-    goUserPage(uid){
-      this.$router.push({name: 'User', params: {id: uid}})
+  watch:{
+    barrageIsShow:function (val) {
+      let timeoutID
+      if (val){
+        let _this = this;
+        setTimeout(function loop() {
+          _this.addToList();
+          timeoutID = setTimeout(loop,_this.randomInt(2000,6000))
+        },300)
+      } else {
+        clearTimeout(timeoutID);
+      }
     }
   },
 
+  methods: {
+    load() {
+      API.getVideo(this.$route.params.id).then((res) => {
+        if (res.status === 0) {
+          this.video = res.data;
+          this.playerOptions.sources[0].src = this.video.url;
+        } else {
+          this.$notify.error({
+            title: '无法获取视频内容',
+            message: res.msg,
+          })
+        }
 
-  components: {
-    videoPlayer,
-    commentSender,
-    commentList,
+      });
+    },
 
+    goUserPage(uid) {
+      let routeData = this.$router.push({name: 'User', params: {id: uid}});
+      window.open(routeData.href, '_blank');
+    },
+
+    addToList (){
+      let comments = this.$refs.commentList.comments;
+      let i =this.randomInt(0, comments.length-1)
+        this.barrageList.push({
+          id: comments[i].user.id,
+          avatar: comments[i].user.avatar,
+          msg: comments[i].content,
+          time:7,
+          type: MESSAGE_TYPE.NORMAL,
+        })
+    },
+    randomInt(from, to){
+      return parseInt(Math.random() * (to - from + 1) + from);
+    },
   },
+
+
   beforeMount() {
     this.load();
   },
 };
+
 </script>
 
-<style>
+<style scoped>
  .header {
   margin-bottom: 16px;
-} .header:after{
+}
+ .header:after{
      content: "";
      display: block;
      clear: both;
    }
+
  .video-header {
    float: left;
  }
@@ -144,4 +210,10 @@ export default {
   float: right;
   margin-right: 0.5em;
 }
+
+  .baberrage{
+    z-index: 2;
+    max-height: 300px;
+    pointer-events: none;
+  }
 </style>

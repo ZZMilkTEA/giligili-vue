@@ -32,11 +32,13 @@
       methods:{
         goMedia(item) {
           if (this.type === 'video'){
-            this.$router.push({name: 'ShowVideo', params: {id: item.id}});
+            let routeData = this.$router.resolve({name: 'ShowVideo', params: {id: item.id}});
+            window.open(routeData.href, '_blank');
             return;
           }
           if (this.type === 'audio'){
-            this.$router.push({name: 'ShowAudio', params: {id: item.id}});
+            let routeData = this.$router.resolve({name: 'ShowAudio', params: {id: item.id}});
+            window.open(routeData.href, '_blank');
             return;
           }
         },

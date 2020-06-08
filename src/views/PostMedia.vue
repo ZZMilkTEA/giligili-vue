@@ -116,6 +116,7 @@
 import * as videoAPI from '../api/video/';
 import * as audioAPI from '../api/audio/';
 import * as uploadAPI from '../api/upload/';
+import * as API from "../api/user";
 
 export default {
   name: 'PostVideo',
@@ -153,8 +154,8 @@ export default {
           { required: true, message: '请选择分区', trigger: 'blur' },
         ],
         file: [
-          { required: true, message: '请上传文件', trigger: 'blur' },
-        ]
+          { required: true, message: '请上传资源', trigger: 'blur' },
+        ],
       },
     };
   },
@@ -192,7 +193,6 @@ export default {
       uploadAPI.postUploadToken(option.file.name,this.$store.getters.getToken).then((res) => {
         const oReq = new XMLHttpRequest();
         oReq.open('PUT', res.data.put, true);
-        oReq.send(option.file);
         oReq.upload.addEventListener("progress",this.progressFunction,false); //调用方法监听上传进度
         oReq.onload = () => {
           this.form.url = res.data.key;
@@ -202,6 +202,7 @@ export default {
             message: "视频上传完成"
           });
         };
+        oReq.send(option.file);
 
       }).catch((error) => {
         this.$notify.error({
@@ -216,10 +217,11 @@ export default {
       if (['audio/mpeg'].indexOf(file.type) === -1) {
         this.$message.error('请上传正确的音频格式');
         return false;
-      }
-      if (!isLt) {
-        this.$message.error('上传视频大小不能超过20MB哦!');
-        return false;
+      } else {
+        if (!isLt) {
+          this.$message.error('上传视频大小不能超过20MB哦!');
+          return false;
+        }
       }
     },
     uploadAudioRequest(option) {
@@ -252,6 +254,7 @@ export default {
       // 设置进度显示
       if (event.lengthComputable) {
         let percent = Math.floor(event.loaded / event.total * 100);
+        console.log('percent:'+ percent);
         if (percent > 100) {
           percent = 100;
         }
@@ -301,10 +304,13 @@ export default {
           } else {
             this.$notify({
               title: '投稿成功',
-              message: `请等待审核结果`,
+              message: `进入审核阶段`,
               type: 'success',
             });
-            this.$router.go(0)
+            let _this = this;
+            setTimeout(function () {
+              _this.$router.go(0);
+            },2000)
           }
         }).catch((error) => {
           this.$notify.error({
@@ -322,10 +328,13 @@ export default {
           } else {
             this.$notify({
               title: '投稿成功',
-              message: `请等待审核结果`,
+              message: `进入审核阶段`,
               type: 'success',
             });
-            this.$router.go(0)
+            let _this = this;
+            setTimeout(function () {
+              _this.$router.go(0);
+            },2000)
           }
         }).catch((error) => {
           this.$notify.error({
@@ -337,6 +346,24 @@ export default {
     },
   },
   mounted() {
+    let token = this.$store.getters.getToken;
+    if (token !== ''){
+      API.userTokenRefresh(token) .then((res) =>{
+        if (res.status === 0) {
+          this.$store.commit('setToken', res.data);
+          API.userTokenGetInfo(token).then((res) =>{
+            this.$store.commit('setUser', res.data);
+          });
+        } else {
+          this.$store.commit('setToken','')
+          this.$notify({
+            title: '登录超时',
+            message: `如需登录请重新登陆`,
+            type: 'warning',
+          });
+        }
+      });
+    }
     if(this.$store.getters.getToken !== ''){
       this.formShow = true;
     }
@@ -347,7 +374,6 @@ export default {
 </script>
 
 <style>
-  @import "~element-ui/lib/theme-chalk/index.css";
 
   .avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;

@@ -2,7 +2,7 @@
     <div class="comment-list">
       <div v-for="comment in comments">
         <comment-show v-bind:comment-info="{avatar:comment.user.avatar, time:comment.created_at,
-         nickname:comment.user.nickname, content:comment.content, id:comment.user.id}" ></comment-show>
+         nickname:comment.user.nickname, content:comment.content, id:comment.id,userId:comment.user.id}" ></comment-show>
         <el-divider></el-divider>
       </div>
       <comment-show></comment-show>
@@ -32,7 +32,7 @@
 
       methods:{
         load() {
-          API.listCommentsById(this.start, this.limit, this.type, this.$route.params.id).then((res) => {
+          API.listCommentsByMediaId(this.start, this.limit, this.type, this.$route.params.id).then((res) => {
             this.comments = res.data.items;
             this.total = res.data.total;
           });

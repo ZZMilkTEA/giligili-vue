@@ -40,12 +40,13 @@ export default {
           });
         } else {
           this.$store.commit('setToken', res.data);
+          this.$store.commit('setUser',res.user);
           this.$notify({
             title: '登陆成功',
             message: '登陆成功，进入主页',
             type: 'success',
           });
-          this.$parent.reload();
+          this.$parent.navReload();
           this.$router.push({name:'Home'});
         }
       }).catch((error) => {

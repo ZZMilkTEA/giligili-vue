@@ -4,10 +4,34 @@
     <div>
       <h2>未实现的饼</h2>
       <ul>
-        <li>举报功能</li>
         <li>个人视频管理</li>
       </ul>
       <h2>更新情况</h2>
+
+      <el-card class="box-card">
+        <h3 slot="header" class="clearfix">
+          <span>v0.5.0</span>
+        </h3>
+        <ul>
+          <li>加入排行榜功能</li>
+          <li>加入举报功能</li>
+          <li>加入从评论拉取弹幕的功能</li>
+          <li>音频可视化效果优化，看上去好像更带感了</li>
+          <li>部分页面打开是从新标签打开</li>
+          <li>修复了投稿页面导航不亮的问题</li>
+        </ul>
+      </el-card>
+
+      <el-card class="box-card">
+        <h3 slot="header" class="clearfix">
+          <span>v0.4.0</span>
+        </h3>
+        <ul>
+          <li>音频可视化</li>
+          <li>登录状态逻辑优化</li>
+          <li>修复若干小bug，但还是好多_(:з」∠)_</li>
+        </ul>
+      </el-card>
 
       <el-card class="box-card">
         <h3 slot="header" class="clearfix">

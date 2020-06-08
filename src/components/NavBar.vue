@@ -1,5 +1,7 @@
 <template>
   <el-menu class="top-bar" mode="horizontal" router>
+<!--    <img src="@/assets/logo.svg" class="logo"/>-->
+    <router-link to="/" ><div class="textLogo">可视化音影播放网站</div></router-link>
     <el-menu-item index="/">首页</el-menu-item>
     <el-menu-item index="/post-media">投稿</el-menu-item>
     <el-menu-item index="/notice">公告</el-menu-item>
@@ -14,7 +16,7 @@
         <el-button type="warning" class="navRightEl" v-on:click="onLogout">登出</el-button>
         <div class="user-info" @click="goUserPage($store.getters.getUserId)">
           <span class="navRightEl">{{userNickname}}</span>
-          <el-avatar v-if="userAvatar" v-else :size="50" class="navRightEl" :src="this.userAvatar"></el-avatar>
+          <el-avatar v-if="userAvatar" :size="50" class="navRightEl" :src="this.userAvatar"></el-avatar>
           <el-avatar v-else :size="60" class="navRightEl" icon="el-icon-user-solid"></el-avatar>
         </div>
       </div>
@@ -40,6 +42,7 @@ export default {
     //用户登出
     onLogout() {
           this.$store.commit('setToken','')
+          localStorage.token = '';
           this.$notify({
             title: '登出成功',
             message: '登出成功',
@@ -54,9 +57,10 @@ export default {
       if (token !== ''){
         API.userTokenRefresh(token) .then((res) =>{
           if (res.status === 0) {
-            this.$store.commit('setToken', res.data);
-            API.userTokenGetInfo(token).then((res) =>{
-              this.$store.commit('setUser', res.data);
+            let newToken = res.data
+            this.$store.commit('setToken', newToken);
+            API.userTokenGetInfo(newToken).then((res_1) =>{
+              this.$store.commit('setUser', res_1.data);
               this.userNickname = this.$store.getters.getUserNickname;
               this.userAvatar = this.$store.getters.getUserAvatar;
             });
@@ -100,5 +104,24 @@ export default {
    .user-info:hover {
     color: #00a1d6;
     cursor: pointer;
+  }
+
+  .logo {
+    margin-top: 5px;
+    margin-right: 10px;
+    vertical-align: center;
+    width: 100px;
+    height: 50px;
+    float: left;
+  }
+
+  .textLogo {
+    margin-top: 5px;
+    margin-right: 10px;
+    vertical-align: center;
+    height: 50px;
+    float: left;
+    font-size: 2em;
+    color: #3a8ee6;
   }
 </style>

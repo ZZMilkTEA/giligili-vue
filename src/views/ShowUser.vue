@@ -14,11 +14,16 @@
     <div>权限等级：{{user.permission}}</div>
     <div>状态：{{user.status}}</div>
     <div>创建日期：{{user.created_at | moment("YYYY-MM-DD h:mm:ss") }}</div>
+    <report-button v-if="this.$route.params.id"
+                   style="color: #dd6161"
+                   report-type="user"
+                   :reported-id="user.id"
+                   :reported-name="user.nickname"
+    ></report-button>
     <h3>用户的视频</h3>
     <card-container method="myPassed" type="video"></card-container>
     <h3>用户的音频</h3>
     <card-container method="myPassed" type="audio"></card-container>
-
 
     <el-dialog
       title="上传头像"
@@ -50,7 +55,8 @@
 
 <script>
   import * as API from '../api/user/';
-  import cardContainer from '../components/CardContainer';
+  import CardContainer from '../components/CardContainer';
+  import ReportButton from "../components/ReportButton";
   import * as uploadAPI from "../api/upload";
   import * as userAPI from "../api/user";
 
@@ -58,7 +64,8 @@
     name: 'User',
 
     components:{
-      cardContainer,
+      CardContainer,
+      ReportButton
     },
 
     data() {

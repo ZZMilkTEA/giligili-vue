@@ -7,22 +7,26 @@
 
 <script>
 import NavBar from '@/components/NavBar.vue';
-import * as API from "./api/user";
 
 export default {
   name: 'App',
   data(){
     return{
       isNavAlive: true,
+      isPostAlive:true,
     }
   },
   components: {
     NavBar,
   },
   methods:{
-    reload(){
+    navReload(){
       this.isNavAlive = false;
       this.$nextTick(() => (this.isNavAlive = true))
+    },
+    postReload(){
+      this.isPostAlive = false;
+      this.$nextTick(() => (this.isPostAlive = true))
     },
   }
 };

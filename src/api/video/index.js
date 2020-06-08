@@ -10,7 +10,7 @@ const getVideo = id => axios.get(`/api/v1/videos/${id}`).then(res => res.data);
 const listPassedVideos = (start, limit, params) => axios.get('/api/v1/passed-videos', { params: { start, limit, kind: params.kind } }).then(res => res.data);
 
 // 读取用户视频列表
-const listMyPassedVideos = (start, limit, id) => axios.get(`/api/v1/user/${id}/passed-videos`, { params: { start, limit } }).then(res => res.data);
+const listMyPassedVideos = (start, limit, id) => axios.get(`/api/v1/users/${id}/passed-videos`, { params: { start, limit } }).then(res => res.data);
 
 export {
   listPassedVideos,

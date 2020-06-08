@@ -3,7 +3,7 @@
     <h3>{{title}}</h3>
     <div class="is-result-none" v-if="items.length === 0">没有结果哦</div>
     <el-row :gutter="20">
-      <el-col :xs="24" :sm="6" :md="6" v-for="item in items" :key="item.id">
+      <el-col :xs="24" :sm="8" :md="6" v-for="item in items" :key="item.id">
         <media-card
         v-bind:card-info="{item:item, avatar:item.avatar,
          title:item.title, info:item.info}"
