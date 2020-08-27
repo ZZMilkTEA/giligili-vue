@@ -1,6 +1,6 @@
 <template>
   <div class="comment-show">
-    <div class="comment-user" @click="goUserPage(commentInfo.user.id)">
+    <div class="comment-user" @click="goUserPage(commentInfo.userId)">
       <div class="user-avatar">
         <el-avatar  v-if="commentInfo.avatar"
                     :src="commentInfo.avatar"></el-avatar>
