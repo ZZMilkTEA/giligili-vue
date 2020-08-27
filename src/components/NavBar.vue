@@ -21,8 +21,6 @@
         </div>
       </div>
     </div>
-
-
   </el-menu>
 </template>
 
@@ -55,7 +53,7 @@ export default {
     getUserInfo: function () {
       let token = this.$store.getters.getToken;
       if (token !== ''){
-        API.userTokenRefresh(token) .then((res) =>{
+        API.userTokenRefresh(token).then((res) =>{
           if (res.status === 0) {
             let newToken = res.data
             this.$store.commit('setToken', newToken);

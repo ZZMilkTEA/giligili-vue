@@ -145,29 +145,29 @@
         //根据频域数据修改粒子状态
         this.analyser.getByteFrequencyData(this.dataArray);
         let arr = this.dataArray.slice(0, 2);
-        let sum = arr.reduce(function (a, b) {return a + b}, 0) / arr.length / 130;
+        let sum = arr.reduce(function (a, b) {return a + b}, 0) / arr.length / 170;
 
         sum = sum*sum;
-        if(!sum || sum < 0.7) {
-          sum = 0.2;
+        if(!sum || sum < 0.6) {
+          sum = 0.1;
         }
         this.particles[i].move(sum);
         switch (this.particles[i].type) {
           case "low":
             arr = this.dataArray.slice(0,20);
-            sum = arr.reduce(function(a,b){return a+b},0) / arr.length * 0.02  ;
+            sum = arr.reduce(function(a,b){return a+b},0) / arr.length / 256  ;
             break;
           case "mid":
             arr = this.dataArray.slice(57,67);
-            sum = arr.reduce(function(a,b){return a+b},0) / arr.length * 0.02 ;
+            sum = arr.reduce(function(a,b){return a+b},0) / arr.length / 256 ;
             break;
           case "high":
             arr = this.dataArray.slice(104,118);
-            sum = arr.reduce(function(a,b){return a+b},0) / arr.length * 0.02 ;
+            sum = arr.reduce(function(a,b){return a+b},0) / arr.length / 256 ;
             break;
         }
 
-        sum = (1+ sum)*(1+ sum/2)/4;
+        sum = sum * (1 + sum) * (1 + sum) * (1 + sum);
         if(!sum || sum < 0.5) {
           sum = 0.5;
         }

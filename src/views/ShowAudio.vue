@@ -98,7 +98,6 @@ export default {
     load() {
       API.getAudio(this.$route.params.id).then((res) => {
         this.audio = res.data;
-        this.playerOptions.sources[0].src = this.audio.url;
       });
     },
     goUserPage(uid){
