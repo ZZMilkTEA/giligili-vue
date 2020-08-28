@@ -121,7 +121,7 @@ export default {
     },
 
     goUserPage(uid) {
-      let routeData = this.$router.push({name: 'User', params: {id: uid}});
+      let routeData = this.$router.resolve({name: 'User', params: {id: uid}});
       window.open(routeData.href, '_blank');
     },
 
